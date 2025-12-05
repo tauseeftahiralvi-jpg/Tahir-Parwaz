@@ -21,4 +21,11 @@ export interface GeneratedArticle {
   tags: string[];
 }
 
+export interface PoetProfile {
+  summary: string;
+  achievements: string[];
+  notableWorks: string[];
+  sources: { title: string; uri: string }[];
+}
+
 export type ViewState = 'GALLERY' | 'ARTICLE';

@@ -169,9 +169,10 @@ const ArticleView: React.FC<ArticleViewProps> = ({ video, onBack }) => {
             <div className="relative pt-[56.25%] w-full">
               <iframe
                 className="absolute top-0 left-0 w-full h-full shadow-2xl"
-                src={`https://www.youtube.com/embed/${video.youtubeId}?origin=${typeof window !== 'undefined' ? window.location.origin : ''}&rel=0&modestbranding=1`}
+                src={`https://www.youtube.com/embed/${video.youtubeId}?rel=0&modestbranding=1&playsinline=1`}
                 title={video.title}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
                 allowFullScreen
               ></iframe>
             </div>
