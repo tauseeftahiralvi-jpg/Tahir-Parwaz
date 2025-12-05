@@ -99,38 +99,39 @@ const ArticleView: React.FC<ArticleViewProps> = ({ video, onBack }) => {
   return (
     <div className="min-h-screen bg-[#0f172a] flex flex-col">
       {/* Navigation Bar */}
-      <div className="bg-midnight-900/90 backdrop-blur border-b border-white/10 px-4 py-3 sticky top-0 z-50 flex items-center justify-between shadow-lg">
+      <div className="bg-midnight-900/80 backdrop-blur-md border-b border-white/5 px-4 py-3 sticky top-0 z-50 flex items-center justify-between shadow-2xl">
         <button 
           onClick={onBack}
           className="flex items-center space-x-2 text-gold-400 hover:text-gold-300 transition-colors group"
         >
-          <div className="p-2 rounded-full bg-white/5 group-hover:bg-white/10">
+          <div className="p-2 rounded-full bg-white/5 group-hover:bg-white/10 transition-colors">
              <ArrowLeftIcon className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
           </div>
           <span className="font-serif font-bold hidden sm:block">Back to Gallery</span>
         </button>
-        <div className="flex items-center space-x-4">
-             {/* Accessibility Controls */}
+        
+        <div className="flex items-center space-x-3">
+             {/* Controls */}
              {!loading && article && (
                  <>
                     <button 
                         onClick={toggleFontSize}
                         className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-full transition-all"
-                        title="Toggle Font Size"
+                        title={fontSize === 'normal' ? "Increase Font Size" : "Reset Font Size"}
                     >
                         <TextSizeIcon className="w-5 h-5" />
                     </button>
                     
                     {/* Audio Controls */}
-                    <div className="flex items-center space-x-1 bg-white/5 rounded-full p-1 border border-white/10">
+                    <div className="flex items-center space-x-1 bg-white/5 rounded-full p-1 border border-white/10 ml-2">
                         {audioState === 'idle' ? (
                             <button 
                                 onClick={handlePlayPause}
-                                className="p-2 rounded-full bg-gold-500/10 text-gold-400 hover:bg-gold-500/20 transition-all flex items-center space-x-2 px-3"
+                                className="p-2 rounded-full bg-gold-500 text-midnight-900 hover:bg-gold-400 transition-all flex items-center space-x-2 px-4 shadow-lg shadow-gold-500/20"
                                 title="Read Article Aloud"
                             >
                                 <SpeakerIcon className="w-5 h-5" />
-                                <span className="text-xs font-bold uppercase hidden md:block">Listen</span>
+                                <span className="text-xs font-bold uppercase tracking-wider hidden md:block">Listen</span>
                             </button>
                         ) : (
                             <>
@@ -149,9 +150,10 @@ const ArticleView: React.FC<ArticleViewProps> = ({ video, onBack }) => {
                                     <StopIcon className="w-5 h-5" />
                                 </button>
                                 <div className="px-2 hidden md:block">
-                                    <div className="space-y-1">
-                                        <div className="h-0.5 w-8 bg-gold-500/50 animate-pulse"></div>
-                                        <div className="h-0.5 w-6 bg-gold-500/30 animate-pulse delay-75"></div>
+                                    <div className="flex space-x-0.5 items-end h-4">
+                                        <div className="w-1 bg-gold-500/80 animate-[bounce_1s_infinite] h-2"></div>
+                                        <div className="w-1 bg-gold-500/80 animate-[bounce_1.2s_infinite] h-4"></div>
+                                        <div className="w-1 bg-gold-500/80 animate-[bounce_0.8s_infinite] h-3"></div>
                                     </div>
                                 </div>
                             </>
@@ -163,102 +165,126 @@ const ArticleView: React.FC<ArticleViewProps> = ({ video, onBack }) => {
       </div>
 
       <div className="flex-1 overflow-y-auto">
-        {/* Video Player Section */}
-        <div className="w-full bg-black">
-          <div className="max-w-6xl mx-auto">
-            <div className="relative pt-[56.25%] w-full">
-              <iframe
-                className="absolute top-0 left-0 w-full h-full shadow-2xl"
-                src={`https://www.youtube.com/embed/${video.youtubeId}?rel=0&modestbranding=1&playsinline=1`}
-                title={video.title}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerPolicy="strict-origin-when-cross-origin"
-                allowFullScreen
-              ></iframe>
+        
+        {/* Cinematic Hero Section */}
+        <div className="relative w-full min-h-[50vh] lg:min-h-[60vh] flex items-end">
+            {/* Background Image */}
+            <div 
+                className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-1000"
+                style={{ 
+                    backgroundImage: `url(https://img.youtube.com/vi/${video.youtubeId}/maxresdefault.jpg)`,
+                    backgroundPosition: 'center 20%' 
+                }}
+            >
+                {/* Gradient Overlays for Readability and Mood */}
+                <div className="absolute inset-0 bg-gradient-to-b from-midnight-900/30 via-midnight-900/60 to-[#0f172a]"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-[#0f172a]/90 to-transparent"></div>
             </div>
-          </div>
+
+            {/* Hero Content */}
+            <div className="relative z-10 max-w-5xl mx-auto px-6 pb-12 w-full">
+                <div className="flex flex-wrap items-center gap-3 mb-6 animate-fade-in-up">
+                    <span className="px-3 py-1 bg-gold-500/20 border border-gold-500/30 text-gold-400 text-xs font-bold uppercase tracking-widest rounded-full backdrop-blur-sm">
+                        Poetic Analysis
+                    </span>
+                    <span className="text-gray-400 text-sm font-medium border-l border-white/20 pl-3">
+                        {video.publishDate}
+                    </span>
+                    <span className="text-gray-400 text-sm font-medium">
+                        • {video.views} Views
+                    </span>
+                </div>
+
+                <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif font-bold text-white mb-6 leading-tight drop-shadow-2xl animate-fade-in-up delay-100">
+                    {video.title}
+                </h1>
+
+                <div className="flex flex-col md:flex-row gap-8 items-start md:items-end animate-fade-in-up delay-200">
+                    <div className="flex-1">
+                         <p className="text-lg md:text-2xl text-gray-200 font-serif italic leading-relaxed border-l-4 border-gold-500 pl-6 drop-shadow-lg">
+                            "{video.description}"
+                        </p>
+                    </div>
+                    <div className="flex-shrink-0">
+                         <a 
+                            href={`https://www.youtube.com/watch?v=${video.youtubeId}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="group flex items-center space-x-3 bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-full transition-all shadow-xl hover:shadow-red-900/50 hover:-translate-y-1"
+                        >
+                            <YouTubeIcon className="w-6 h-6" />
+                            <span className="font-bold tracking-wide uppercase text-sm">Watch Original</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        {/* Video Info Section */}
-        <div className="bg-midnight-900 border-b border-white/5">
-          <div className="max-w-4xl mx-auto px-6 py-8">
-            <div className="flex flex-wrap items-center gap-4 mb-3 text-sm text-gray-400">
-               <span className="px-2 py-1 bg-red-600 text-white text-xs font-bold rounded uppercase tracking-wider">Now Playing</span>
-               <span>{video.publishDate}</span>
-               <span>•</span>
-               <span>{video.views} Views</span>
-            </div>
-            
-            <h1 className="text-3xl md:text-4xl font-serif font-bold text-white mb-4 leading-tight">
-               {video.title}
-            </h1>
-
-            <div className="bg-white/5 rounded-lg p-6 border-l-4 border-gold-500">
-              <p className="text-gray-300 text-lg leading-relaxed font-serif italic">
-                 "{video.description}"
-              </p>
-            </div>
-            
-            <div className="mt-6 flex flex-wrap gap-4">
-                 <a 
-                    href={`https://www.youtube.com/watch?v=${video.youtubeId}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center space-x-2 text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-full transition-colors text-sm font-bold uppercase tracking-wide shadow-lg"
-                 >
-                    <YouTubeIcon className="w-5 h-5" />
-                    <span>Watch on @Gogipk Channel</span>
-                 </a>
-            </div>
-          </div>
-        </div>
-
-        {/* Generated Content Container */}
-        <div className="max-w-4xl mx-auto px-6 py-12">
+        {/* Content Container */}
+        <div className="bg-[#0f172a] relative">
+            <div className="max-w-4xl mx-auto px-6 py-12">
             
             {loading && (
-              <div className="flex flex-col items-center justify-center py-24 space-y-6">
-                <div className="relative w-16 h-16">
+              <div className="flex flex-col items-center justify-center py-12 space-y-6 min-h-[300px]">
+                <div className="relative w-20 h-20">
                   <div className="absolute inset-0 border-4 border-gold-600/20 rounded-full"></div>
                   <div className="absolute inset-0 border-4 border-gold-400 rounded-full border-t-transparent animate-spin"></div>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <SparklesIcon className="w-8 h-8 text-gold-500 animate-pulse" />
+                  </div>
                 </div>
                 <div className="text-center">
-                  <h3 className="text-xl font-serif text-gold-400 animate-pulse">Consulting the Muses...</h3>
-                  <p className="text-gray-400 mt-2">Translating emotions into words (English & Urdu)</p>
+                  <h3 className="text-2xl font-serif text-white animate-pulse">Composing Analysis...</h3>
+                  <p className="text-gold-400/80 mt-2 font-serif italic">Translating silence into words</p>
                 </div>
               </div>
             )}
 
             {error && (
-              <div className="p-6 bg-red-900/10 border border-red-900/30 rounded-lg text-center mt-8">
-                <h3 className="text-red-400 font-bold mb-2">Analysis Failed</h3>
-                <p className="text-gray-300">{error}</p>
-                <button onClick={() => window.location.reload()} className="mt-4 text-white underline">Try Again</button>
+              <div className="p-8 bg-red-900/10 border border-red-500/20 rounded-2xl text-center mt-8">
+                <div className="inline-block p-3 bg-red-500/10 rounded-full mb-4">
+                    <StopIcon className="w-8 h-8 text-red-500" />
+                </div>
+                <h3 className="text-xl text-white font-bold mb-2">Analysis Unavailable</h3>
+                <p className="text-gray-400 mb-6">{error}</p>
+                <button 
+                    onClick={() => window.location.reload()} 
+                    className="px-6 py-2 bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-lg transition-colors"
+                >
+                    Try Again
+                </button>
               </div>
             )}
 
             {article && !loading && (
-              <div className="animate-fade-in space-y-16">
+              <div className="animate-fade-in space-y-20">
                  
                  {/* Emotional Spectrum Widget */}
                  {article.emotionalSpectrum.length > 0 && (
-                     <div className="bg-midnight-800 p-6 rounded-xl border border-white/5 shadow-xl">
-                        <h4 className="text-xs uppercase tracking-widest text-gray-500 mb-4">Emotional Spectrum</h4>
-                        <div className="flex h-4 rounded-full overflow-hidden bg-black/50">
+                     <div className="bg-midnight-800/50 backdrop-blur p-8 rounded-2xl border border-white/5 shadow-2xl">
+                        <div className="flex items-center space-x-2 mb-6">
+                            <SparklesIcon className="w-5 h-5 text-gold-500" />
+                            <h4 className="text-sm uppercase tracking-widest text-gold-500 font-bold">Emotional Resonance</h4>
+                        </div>
+                        
+                        <div className="flex h-6 rounded-full overflow-hidden bg-black/50 mb-4 ring-1 ring-white/10">
                             {article.emotionalSpectrum.map((emotion, idx) => (
                                 <div 
                                     key={idx}
                                     style={{ width: `${emotion.percentage}%`, backgroundColor: emotion.color }}
-                                    className="h-full transition-all duration-1000"
-                                    title={`${emotion.label}: ${emotion.percentage}%`}
-                                />
+                                    className="h-full transition-all duration-1000 relative group"
+                                >
+                                    {/* Tooltip on hover */}
+                                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-black/20 transition-opacity"></div>
+                                </div>
                             ))}
                         </div>
-                        <div className="flex justify-between mt-3 text-xs md:text-sm font-medium">
+                        <div className="flex flex-wrap justify-between gap-4">
                             {article.emotionalSpectrum.map((emotion, idx) => (
-                                <div key={idx} className="flex items-center space-x-1.5">
-                                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: emotion.color }}></div>
-                                    <span className="text-gray-300">{emotion.label} <span className="text-gray-500">({emotion.percentage}%)</span></span>
+                                <div key={idx} className="flex items-center space-x-2 bg-white/5 px-3 py-1.5 rounded-full border border-white/5">
+                                    <div className="w-2.5 h-2.5 rounded-full shadow-[0_0_10px]" style={{ backgroundColor: emotion.color, boxShadow: `0 0 10px ${emotion.color}` }}></div>
+                                    <span className="text-gray-200 text-sm font-medium">{emotion.label}</span>
+                                    <span className="text-gray-500 text-xs font-mono">{emotion.percentage}%</span>
                                 </div>
                             ))}
                         </div>
@@ -266,24 +292,23 @@ const ArticleView: React.FC<ArticleViewProps> = ({ video, onBack }) => {
                  )}
 
                  {/* English Section */}
-                 <div className={`prose prose-invert max-w-none ${fontSize === 'large' ? 'text-xl leading-relaxed' : 'text-lg leading-relaxed'} font-serif`}>
-                    <div className="flex items-center space-x-2 text-gold-500 mb-6 border-b border-gray-800 pb-2">
-                        <SparklesIcon className="w-5 h-5" />
-                        <span className="text-sm font-sans tracking-widest uppercase">English Analysis</span>
-                    </div>
+                 <div className={`prose prose-invert max-w-none ${fontSize === 'large' ? 'text-xl leading-loose' : 'text-lg leading-relaxed'} font-serif`}>
                     
-                    <h2 className="text-3xl md:text-4xl text-white font-bold mb-8">{article.title}</h2>
+                    <h2 className="text-3xl md:text-5xl text-white font-bold mb-10 pb-6 border-b border-white/10">{article.title}</h2>
                     
                     <ReactMarkdown
                          components={{
-                            h1: ({node, ...props}) => <h2 className="text-2xl text-gold-400 font-bold mt-10 mb-6" {...props} />,
-                            h2: ({node, ...props}) => <h3 className="text-xl text-white font-semibold mt-8 mb-4 border-l-4 border-gold-600 pl-4" {...props} />,
-                            p: ({node, ...props}) => <p className="mb-6 text-gray-300" {...props} />,
+                            h1: ({node, ...props}) => <h2 className="text-2xl text-gold-400 font-bold mt-12 mb-6 tracking-wide" {...props} />,
+                            h2: ({node, ...props}) => <h3 className="text-xl text-white font-semibold mt-10 mb-4 border-l-2 border-gold-600 pl-4" {...props} />,
+                            p: ({node, ...props}) => <p className="mb-6 text-gray-300 text-opacity-90" {...props} />,
                             blockquote: ({node, ...props}) => (
-                                <blockquote className="border-l-4 border-gold-500 bg-midnight-800/50 p-6 my-8 italic text-xl text-white/90 shadow-inner rounded-r-lg quote-box" {...props} />
+                                <div className="relative my-10 pl-8">
+                                    <div className="absolute top-0 left-0 h-full w-1 bg-gradient-to-b from-gold-400 to-transparent"></div>
+                                    <blockquote className="text-2xl italic text-white/90 font-serif leading-relaxed" {...props} />
+                                </div>
                             ),
                             strong: ({node, ...props}) => <strong className="text-gold-200 font-bold" {...props} />,
-                            ul: ({node, ...props}) => <ul className="list-disc list-outside ml-6 mb-6 space-y-2 text-gray-400" {...props} />,
+                            ul: ({node, ...props}) => <ul className="list-disc list-outside ml-6 mb-6 space-y-3 text-gray-400 marker:text-gold-500" {...props} />,
                          }}
                     >
                         {article.englishContent}
@@ -291,49 +316,58 @@ const ArticleView: React.FC<ArticleViewProps> = ({ video, onBack }) => {
                  </div>
 
                  {/* Divider */}
-                 <div className="flex items-center justify-center py-8">
-                     <div className="h-px bg-gradient-to-r from-transparent via-gold-500/50 to-transparent w-full max-w-sm"></div>
+                 <div className="flex items-center justify-center py-12">
+                     <div className="w-2 h-2 bg-gold-500 rounded-full mx-2"></div>
+                     <div className="w-2 h-2 bg-gold-500 rounded-full mx-2 opacity-50"></div>
+                     <div className="w-2 h-2 bg-gold-500 rounded-full mx-2 opacity-25"></div>
                  </div>
 
                  {/* Urdu Section */}
-                 <div className="rtl bg-[#16213e] p-8 md:p-12 rounded-2xl border border-white/5 shadow-2xl relative overflow-hidden">
-                     <div className="absolute top-0 right-0 w-32 h-32 bg-gold-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+                 <div className="relative group">
+                     {/* Decorative Glow */}
+                     <div className="absolute -inset-1 bg-gradient-to-r from-gold-600/20 to-purple-600/20 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
                      
-                     <div className="flex items-center space-x-2 space-x-reverse text-gold-500 mb-8 border-b border-white/10 pb-4">
-                        <span className="text-sm font-sans tracking-widest uppercase">Urdu Interpretation</span>
-                     </div>
+                     <div className="rtl bg-[#16213e] p-8 md:p-14 rounded-2xl border border-white/10 shadow-2xl relative overflow-hidden">
+                        <div className="absolute top-0 left-0 w-64 h-64 bg-gold-500/5 rounded-full blur-[100px] pointer-events-none"></div>
+                        
+                        <div className="flex items-center space-x-3 space-x-reverse text-gold-500 mb-10 border-b border-white/10 pb-4">
+                            <span className="text-sm font-sans tracking-[0.2em] uppercase font-bold">Urdu Interpretation</span>
+                            <div className="flex-1 h-px bg-white/10"></div>
+                        </div>
 
-                     <div className={`text-right font-urdu ${fontSize === 'large' ? 'text-3xl leading-[2.8]' : 'text-2xl leading-[2.5]'} text-gray-200`}>
-                        <ReactMarkdown
-                            components={{
-                                h1: ({node, ...props}) => <h2 className="text-gold-400 font-bold mt-8 mb-6" {...props} />,
-                                strong: ({node, ...props}) => <span className="text-gold-200" {...props} />,
-                                p: ({node, ...props}) => <p className="mb-8" {...props} />,
-                            }}
-                        >
-                            {article.urduContent}
-                        </ReactMarkdown>
+                        <div className={`text-right font-urdu ${fontSize === 'large' ? 'text-3xl leading-[2.8]' : 'text-2xl leading-[2.6]'} text-gray-200`}>
+                            <ReactMarkdown
+                                components={{
+                                    h1: ({node, ...props}) => <h2 className="text-gold-400 font-bold mt-10 mb-8" {...props} />,
+                                    strong: ({node, ...props}) => <span className="text-gold-200" {...props} />,
+                                    p: ({node, ...props}) => <p className="mb-10" {...props} />,
+                                    blockquote: ({node, ...props}) => <blockquote className="border-r-4 border-gold-500/50 pr-6 my-8 text-white/90 bg-black/20 p-6 rounded-l-xl" {...props} />,
+                                }}
+                            >
+                                {article.urduContent}
+                            </ReactMarkdown>
+                        </div>
                      </div>
                  </div>
 
                  {/* Tags */}
-                 <div className="pt-8 flex flex-wrap gap-2 justify-center">
+                 <div className="flex flex-wrap gap-3 justify-center pt-8">
                   {article.tags.map(tag => (
-                    <span key={tag} className="px-4 py-1.5 bg-midnight-800 text-gray-400 text-sm rounded-full border border-gray-700 hover:border-gold-500/50 transition-colors">
+                    <span key={tag} className="px-5 py-2 bg-midnight-800 text-gray-400 text-sm rounded-full border border-gray-700/50 hover:border-gold-500/50 hover:text-gold-400 transition-colors cursor-default">
                       #{tag}
                     </span>
                   ))}
                 </div>
 
                 {/* Social Share */}
-                <div className="pt-12 mt-12 border-t border-white/10">
-                    <h3 className="text-center text-gold-500 font-serif text-xl mb-6">Share this Masterpiece</h3>
-                    <div className="flex justify-center gap-6">
+                <div className="pt-16 pb-8 border-t border-white/5">
+                    <h3 className="text-center text-gold-500 font-serif text-2xl italic mb-8">Share this Poetic Journey</h3>
+                    <div className="flex justify-center gap-8">
                         <a 
                             href={`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`} 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            className="p-3 bg-blue-600 rounded-full text-white hover:bg-blue-700 hover:scale-110 transition-all shadow-lg"
+                            className="group relative p-4 bg-[#1877F2] rounded-full text-white transition-transform hover:-translate-y-1 shadow-lg shadow-blue-900/20"
                             title="Share on Facebook"
                         >
                             <FacebookIcon className="w-6 h-6" />
@@ -342,7 +376,7 @@ const ArticleView: React.FC<ArticleViewProps> = ({ video, onBack }) => {
                             href={`https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}`} 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            className="p-3 bg-black border border-gray-800 rounded-full text-white hover:bg-gray-900 hover:scale-110 transition-all shadow-lg"
+                            className="group relative p-4 bg-black border border-gray-800 rounded-full text-white transition-transform hover:-translate-y-1 shadow-lg shadow-gray-900/20"
                             title="Share on X (Twitter)"
                         >
                             <TwitterIcon className="w-6 h-6" />
@@ -351,7 +385,7 @@ const ArticleView: React.FC<ArticleViewProps> = ({ video, onBack }) => {
                             href={`https://wa.me/?text=${shareText} ${shareUrl}`} 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            className="p-3 bg-green-500 rounded-full text-white hover:bg-green-600 hover:scale-110 transition-all shadow-lg"
+                            className="group relative p-4 bg-[#25D366] rounded-full text-white transition-transform hover:-translate-y-1 shadow-lg shadow-green-900/20"
                             title="Share on WhatsApp"
                         >
                             <WhatsAppIcon className="w-6 h-6" />
@@ -361,6 +395,7 @@ const ArticleView: React.FC<ArticleViewProps> = ({ video, onBack }) => {
 
               </div>
             )}
+            </div>
         </div>
       </div>
     </div>
