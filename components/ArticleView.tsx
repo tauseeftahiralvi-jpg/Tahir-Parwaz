@@ -2,12 +2,21 @@ import React, { useEffect, useState, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Video, GeneratedArticle } from '../types';
 import { generateArticleFromVideo } from '../services/geminiService';
-import { ArrowLeftIcon, SparklesIcon, YouTubeIcon, SpeakerIcon, StopIcon, TextSizeIcon, FacebookIcon, TwitterIcon, WhatsAppIcon, PlayIcon, PauseIcon } from './Icons';
+import { ArrowLeftIcon, SparklesIcon, YouTubeIcon, SpeakerIcon, StopIcon, TextSizeIcon, FacebookIcon, TwitterIcon, WhatsAppIcon, PlayIcon, PauseIcon, QuillIcon } from './Icons';
 
 interface ArticleViewProps {
   video: Video;
   onBack: () => void;
 }
+
+const loadingPhrases = [
+    "Listening to the silence...",
+    "Weaving words of wisdom...",
+    "Translating the soul...",
+    "Composing the analysis...",
+    "Finding the hidden rhythms...",
+    "Ink flowing from emotions..."
+];
 
 const ArticleView: React.FC<ArticleViewProps> = ({ video, onBack }) => {
   const [article, setArticle] = useState<GeneratedArticle | null>(null);
@@ -15,9 +24,20 @@ const ArticleView: React.FC<ArticleViewProps> = ({ video, onBack }) => {
   const [error, setError] = useState<string | null>(null);
   const [fontSize, setFontSize] = useState<'normal' | 'large'>('normal');
   const [audioState, setAudioState] = useState<'idle' | 'playing' | 'paused'>('idle');
+  const [loadingPhraseIndex, setLoadingPhraseIndex] = useState(0);
   
   const synthRef = useRef<SpeechSynthesis | null>(null);
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+
+  useEffect(() => {
+    let interval: any;
+    if (loading) {
+        interval = setInterval(() => {
+            setLoadingPhraseIndex(prev => (prev + 1) % loadingPhrases.length);
+        }, 2000);
+    }
+    return () => clearInterval(interval);
+  }, [loading]);
 
   useEffect(() => {
     let isMounted = true;
@@ -225,17 +245,23 @@ const ArticleView: React.FC<ArticleViewProps> = ({ video, onBack }) => {
             <div className="max-w-4xl mx-auto px-6 py-12">
             
             {loading && (
-              <div className="flex flex-col items-center justify-center py-12 space-y-6 min-h-[300px]">
-                <div className="relative w-20 h-20">
-                  <div className="absolute inset-0 border-4 border-gold-600/20 rounded-full"></div>
-                  <div className="absolute inset-0 border-4 border-gold-400 rounded-full border-t-transparent animate-spin"></div>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <SparklesIcon className="w-8 h-8 text-gold-500 animate-pulse" />
-                  </div>
+              <div className="flex flex-col items-center justify-center py-24 min-h-[400px]">
+                {/* Quill Animation */}
+                <div className="relative mb-10 group">
+                    <div className="absolute -inset-4 bg-gold-500/5 rounded-full blur-2xl animate-pulse"></div>
+                    <QuillIcon className="w-16 h-16 text-gold-500 animate-writing drop-shadow-[0_0_15px_rgba(212,175,55,0.5)]" />
                 </div>
-                <div className="text-center">
-                  <h3 className="text-2xl font-serif text-white animate-pulse">Composing Analysis...</h3>
-                  <p className="text-gold-400/80 mt-2 font-serif italic">Translating silence into words</p>
+                
+                {/* Text Animation */}
+                <div className="h-10 overflow-hidden relative w-full max-w-lg text-center">
+                    <p className="text-2xl font-serif text-white/90 animate-fade-in-up key-{loadingPhraseIndex} italic">
+                        {loadingPhrases[loadingPhraseIndex]}
+                    </p>
+                </div>
+                
+                {/* Progress Ink Line */}
+                <div className="w-48 h-0.5 bg-white/10 rounded-full mt-8 overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-transparent via-gold-500 to-transparent w-full animate-shimmer"></div>
                 </div>
               </div>
             )}
